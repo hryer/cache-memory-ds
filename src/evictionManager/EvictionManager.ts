@@ -1,12 +1,18 @@
 import { ICache } from '../types/main.interfaces';
 
 class EvictionManager {
-  push(cache: ICache, limit: number, key: string, value: any): number {
+  public cache: ICache;
+
+  constructor() {
+    this.cache = {}
+  }
+
+  push(limit: number, key: string, value: any): number {
     try {
-      if (cache[key]) {
+      if (this.cache[key]) {
         return 1;
       } else {
-        cache[key] = value;
+        this.cache[key] = value;
         return 0;
       }
     } catch (error) {
@@ -14,12 +20,12 @@ class EvictionManager {
     }
   }
 
-  pop(cache: ICache): string {
+  pop(): string {
     try {
-      const lengthCache = Object.keys(cache).length;
+      const lengthCache = Object.keys(this.cache).length;
 
       if (lengthCache > 0) {
-        const result:string = Object.keys(cache)[lengthCache - 1];
+        const result:string = Object.keys(this.cache)[lengthCache - 1];
         return `${result} has been deleted`;
       }else {
         throw 'Error: Fail to deleted';
@@ -29,17 +35,19 @@ class EvictionManager {
     }
   }
 
-  clear(cache: ICache): object {
+  clear(): number {
     try {
-      const lengthCache = Object.keys(cache).length;
-      cache = {}
-      return {
-        lengthCache,
-        cache
-      };
+      const lengthCache = Object.keys(this.cache).length;
+      this.cache = {};
+      
+      return lengthCache;
     } catch (error) {
       throw error;
     }
+  }
+
+  keys(): Array<string> {
+    return Object.keys(this.cache);
   }
 }
 

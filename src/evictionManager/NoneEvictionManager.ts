@@ -1,4 +1,3 @@
-import { ICache } from '../types/main.interfaces';
 import EvictionManager from './EvictionManager';
 
 class NoneEvictionManager extends EvictionManager {
@@ -6,16 +5,16 @@ class NoneEvictionManager extends EvictionManager {
     super();
   }
 
-  push(cache: ICache, limit: number, key: string, value: any): number{
+  push(limit: number, key: string, value: any): number{
     try {
-      if(cache[key]){
+      if(this.cache[key]){
         return 1;
       }
       
-      if (Object.keys(cache).length >= limit) {
+      if (Object.keys(this.cache).length === limit) {
         throw 'key_limit_exceeded';
       }else {
-        cache[key] = value;
+        this.cache[key] = value;
         return 0;
       }
     } catch (error) {
@@ -23,9 +22,9 @@ class NoneEvictionManager extends EvictionManager {
     }
   }
 
-  get(cache: ICache, key: string){
-    if(cache[key]){
-      return cache[key];
+  get(key: string){
+    if(this.cache[key]){
+      return this.cache[key];
     }else {
       throw 'key_doesnt_exists';
     }

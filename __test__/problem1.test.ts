@@ -23,16 +23,3 @@ test('Clear Cache', () => {
   expect(IMC.clear()).toBe(3);
   expect(IMC.keys()).toEqual([]);
 })
-
-// console.log(IMC.add('key1', 'value1'))
-// console.log(IMC.add('key2', 'value2'))
-// console.log(IMC.add('key3', 'value3'))
-// console.log(IMC.add('key2', 'value2.1'))
-// console.log(IMC.get('key3'))
-// console.log(IMC.get('key1'))
-// console.log(IMC.get('key3'))
-// console.log(IMC.keys())
-// console.log(IMC.add('key4','val1'))
-// console.log(IMC.keys())
-// console.log(IMC.clear())
-// console.log(IMC.keys())
