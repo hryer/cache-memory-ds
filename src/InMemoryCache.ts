@@ -33,89 +33,19 @@ class InMemoryCache {
 
 }
 
-class EvictionManager {
-  push(cache: ICache, limit: number, key: string, value: any): number {
-    try {
-      if (cache[key]) {
-        return 1;
-      } else {
-        cache[key] = value;
-        return 0;
-      }
-    } catch (error) {
-      throw error;
-    }
-  }
+export default InMemoryCache;
 
-  pop(cache: ICache): string {
-    try {
-      const lengthCache = Object.keys(cache).length;
-
-      if (lengthCache > 0) {
-        const result:string = Object.keys(cache)[lengthCache - 1];
-        return `${result} has been deleted`;
-      }else {
-        throw 'Error: Fail to deleted';
-      }
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  clear(cache: ICache): object {
-    try {
-      const lengthCache = Object.keys(cache).length;
-      cache = {}
-      return {
-        lengthCache,
-        cache
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
-}
-
-class NoneEvictionManager extends EvictionManager {
-  constructor() {
-    super();
-  }
-
-  push(cache: ICache, limit: number, key: string, value: any): number{
-    try {
-      if (Object.keys(cache).length >= limit) {
-        throw 'key_limit_exceeded';
-      }else if(cache[key]){
-        return 1;
-      }else {
-        cache[key] = value;
-        return 0;
-      }
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  get(cache: ICache, key: string){
-    if(cache[key]){
-      return cache[key];
-    }else {
-      throw 'key_doesnt_exists';
-    }
-  }
-}
-
-const eM = new NoneEvictionManager();
-const IMC = new InMemoryCache(3, eM);
-console.log(IMC.add('key1', 'value1'))
-console.log(IMC.add('key2', 'value2'))
-console.log(IMC.add('key3', 'value3'))
-console.log(IMC.add('key2', 'value2.1'))
-console.log(IMC.get('key3'))
-console.log(IMC.get('key1'))
-console.log(IMC.get('key3'))
-console.log(IMC.keys())
-console.log(IMC.add('key4','val1'))
-console.log(IMC.keys())
-console.log(IMC.clear())
-console.log(IMC.keys())
+// const eM = new NoneEvictionManager();
+// const IMC = new InMemoryCache(3, eM);
+// console.log(IMC.add('key1', 'value1'))
+// console.log(IMC.add('key2', 'value2'))
+// console.log(IMC.add('key3', 'value3'))
+// console.log(IMC.add('key2', 'value2.1'))
+// console.log(IMC.get('key3'))
+// console.log(IMC.get('key1'))
+// console.log(IMC.get('key3'))
+// console.log(IMC.keys())
+// console.log(IMC.add('key4','val1'))
+// console.log(IMC.keys())
+// console.log(IMC.clear())
+// console.log(IMC.keys())
