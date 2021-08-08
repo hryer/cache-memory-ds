@@ -18,7 +18,7 @@
 import InMemoryCache from '../src/InMemoryCache';
 import LFUEvictionManager from '../src/evictionManager/LFUEvictionManager';
 
-const eM = new LFUEvictionManager(3);
+const eM = new LFUEvictionManager();
 const IMC = new InMemoryCache(3, eM);
 
 test('Adding Cache', () => {
@@ -26,17 +26,16 @@ test('Adding Cache', () => {
   expect(IMC.add('key2', 'value2')).toBe(0);
   expect(IMC.add('key3', 'value3')).toBe(0);
   expect(IMC.add('key2', 'value2.1')).toBe(1);
-  expect(IMC.add('key4', 'value4')).toBe(0);
-  expect(IMC.keys()).toEqual(['key2','key3','key4']);
+  expect(IMC.get('key1')).toEqual('value1');
   expect(IMC.get('key2')).toEqual('value2');
-  expect(IMC.add('key5', 'value5')).toBe(0);
-  expect(IMC.keys()).toEqual(['key2','key4','key5']);
+  expect(IMC.get('key1')).toEqual('value1');
+  expect(IMC.get('key2')).toEqual('value2');
+  expect(IMC.add('key0', 'value0')).toBe(0);
 })
 
 test('Get Value Cache and List Keys', () => {
-  expect(IMC.get('key2')).toBe('value2');
-  expect(IMC.get('key4')).toBe('value4');
-  expect(IMC.keys()).toEqual(['key2','key4','key5']);
+  expect(IMC.get('key0')).toBe('value0');
+  expect(IMC.keys()).toEqual(['key1','key2','key0']);
 })
 
 test('Clear Cache', () => {

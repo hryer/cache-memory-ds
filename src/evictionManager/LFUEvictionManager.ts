@@ -33,23 +33,24 @@ class LFUEvictionManager {
       if (this.cache.has(key)) {
         return 1;
       } else {
-        const min = Math.min(...this.use.values());
+        let tmp:any = [];
+        this.use.forEach((v:any,k:any) => { tmp.push(v)});
+        const min = Math.min(...tmp);
+
         if (this.cache.has(key)) {
           this.cache.delete(key);
         }
         this.cache.set(key, value);
-        if (!this.use.has(key)) {
-          this.use.set(key, 1);
-        } else {
-          let count = this.use.get(key);
-          this.use.set(key, count + 1);
-        }
+
+        this.use.set(key, 1);
 
         if (this.cache.size > limit) {
+          // console.log(`limit ${this.cache.size} min ${min}`)
           let list = this.cache.keys();
           let node = list.next();
           while (!node.done) {
             if (this.use.get(node.value) === min) {
+              // console.log(node.value);
               this.use.delete(node.value);
               this.cache.delete(node.value);
               break;
@@ -63,6 +64,24 @@ class LFUEvictionManager {
     } catch (error) {
       throw error;
     }
+  }
+
+  clear(): number {
+    try {
+      let lengthCache = this.cache.size;
+      this.cache.clear();
+
+      return lengthCache;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  keys(): Array<string> {
+    // console.log(this.cache.keys())
+    let tmp:any = [];
+    this.cache.forEach((v:any,k:any) => { tmp.push(k)});
+    return tmp;
   }
 
 }
