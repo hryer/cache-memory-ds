@@ -26,17 +26,17 @@ class LRUEvictionManager extends EvictionManager {
     this.size = 0;
   }
 
-  pop():string {
+  pop(): string {
     const keyDNode = this.tail ? this.tail.key : null;
 
-    if(!this.tail){
+    if (!this.tail) {
       throw 'key_doesnt_exists';
-    }else if(this.head === this.tail){
+    } else if (this.head === this.tail) {
       this.head = null;
       this.tail = null;
       delete this.cache[keyDNode];
       this.size--;
-    }else {
+    } else {
       this.tail = this.tail.prev;
       this.tail.next = null;
       delete this.cache[keyDNode]
@@ -81,21 +81,21 @@ class LRUEvictionManager extends EvictionManager {
     }
   }
 
-  get(key: string){
-    if(!this.cache[key]) {
+  get(key: string) {
+    if (!this.cache[key]) {
       throw 'key_doesnt_exists';
-    }else{
+    } else {
       let foundNode = this.cache[key];
 
-      if(foundNode === this.head) return foundNode;
+      if (foundNode === this.head) return foundNode;
 
       let foundPrev = foundNode.prev;
       let foundNext = foundNode.next;
 
-      if(foundNode === this.tail){
+      if (foundNode === this.tail) {
         foundPrev.next = null;
         this.tail = foundPrev;
-      }else {
+      } else {
         foundPrev.next = foundNext;
         foundNext.prev = foundPrev;
       }
