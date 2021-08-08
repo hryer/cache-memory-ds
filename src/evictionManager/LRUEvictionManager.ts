@@ -1,5 +1,7 @@
 import EvictionManager from './EvictionManager';
 
+/* TODO:: Refactor using map not object on cache */
+
 class DNode {
   private key: string;
   private value: any;

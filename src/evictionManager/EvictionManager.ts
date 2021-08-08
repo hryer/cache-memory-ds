@@ -1,5 +1,7 @@
 import { ICache } from '../types/main.interfaces';
 
+/* TODO:: Refactor using map not object */
+
 class EvictionManager {
   public cache: ICache;
 

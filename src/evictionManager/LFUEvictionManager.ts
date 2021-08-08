@@ -1,94 +1,70 @@
-import EvictionManager from './EvictionManager';
-import { ICache } from '../types/main.interfaces';
+// import EvictionManager from './EvictionManager';
+// import { ICache } from '../types/main.interfaces';
+class LFUEvictionManager {
 
-class CacheNode {
-  key:string;
-  public value:any;
-  public frequency:number;
+  private use: any;
+  private cache: any;
 
-  constructor(key:string, value:any, frequency:number){
-    this.key = key;
-    this.value = value;
-    this.frequency = frequency;
-  }
-}
-class LFUEvictionManager extends EvictionManager{
-  // private cache:any;/* Map<Integer, CacheNode> */
-  private frequencyList:any; /* new Set() max limit x 2 */
-  private lowestFrequency:number;
-  // private maxFrequency:number;
-  // private maxCacheSize:number;
-  private currSize:number;
-  private heap:any;
-
-  constructor(limit:number){
-    super();
-    this.lowestFrequency = 0;
-    // this.maxFrequency = limit * 2 - 1;
-    // this.maxCacheSize = limit;
-    this.currSize = 0;
-    this.heap = [];
+  constructor() {
+    this.use = new Map();
+    this.cache = new Map();
   }
 
-  getMin (){
-    return this.heap[0];
-  }
-
-  push(limit: number, key: string, value: any) {
+  get(key: string) {
     try {
-      let newNode;
-    
-      if (this.cache[key]) {
+      let res;
+      if (!this.cache.has(key)) {
+        throw 'key_doesnt_exists';
+      } else {
+        let count = this.use.get(key);
+        res = this.cache.get(key);
+        this.use.set(key, count++);
+        this.cache.delete(key);
+        this.cache.set(key, res);
+      }
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  push(limit: number, key: string, value: any): number {
+    try {
+      if (this.cache.has(key)) {
         return 1;
       } else {
-        if(limit === this.currSize){
-          // eviction (pengurangan / remove root minheap)
-
+        const min = Math.min(...this.use.values());
+        if (this.cache.has(key)) {
+          this.cache.delete(key);
         }
-        // save new node to latest array
-        newNode = new CacheNode(key, value, 0);
-        this.heap.push(newNode);
-        this.cache[key] = newNode;
-
-        // finding correct position for the new node
-        if(this.heap.length > 1){
-          // freq 2 3 0
-          let curr = this.heap.length - 1;
-
-          while( curr > 1 && this.heap[Math.floor(curr/2)] > this.heap[curr])
+        this.cache.set(key, value);
+        if (!this.use.has(key)) {
+          this.use.set(key, 1);
+        } else {
+          let count = this.use.get(key);
+          this.use.set(key, count + 1);
         }
 
-        return 0; 
+        if (this.cache.size > limit) {
+          let list = this.cache.keys();
+          let node = list.next();
+          while (!node.done) {
+            if (this.use.get(node.value) === min) {
+              this.use.delete(node.value);
+              this.cache.delete(node.value);
+              break;
+            }
+            node = list.next();
+          }
+        }
+
+        return 0;
       }
     } catch (error) {
       throw error;
     }
   }
 
-  addFrequency(currentNode:CacheNode){
-    let currentFrequency:number = currentNode.frequency;
-
-    if(currentFrequency < this.maxFrequency) {
-      let nextFrequency:number = currentFrequency + 1;
-      currentNode = this.frequencyList[currentFrequency];
-      // newNodes = this.frequencyList[nextFrequency];
-      // moveToNextFr
-    }
-  }
-
-  moveToNextFrequency(currentNode:CacheNode, nextFrequency:number, currentNodes:any, newNodes:any){
-    currentNodes.remove
-  }
-
-  findNextLowestFrequency() {
-    while (this.lowestFrequency <= this.maxFrequency && this.frequencyList[this.lowestFrequency] === null ){
-      this.lowestFrequency++;
-    }
-
-    if(this.lowestFrequency > this.maxFrequency){
-      this.lowestFrequency = 0;
-    }
-  }
 }
 
 export default LFUEvictionManager;
